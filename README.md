@@ -24,12 +24,18 @@ dotnet-monitor config show
 - <https://learn.microsoft.com/en-us/dotnet/core/diagnostics/available-counters>
 - <https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/diagnostics?view=aspnetcore-7.0>
 
-## Simulating Load
+## Load Testing
 
-### Gocannon
+### LoadTestToolbox
+
+[LoadTestToolbox](https://github.com/ecoAPM/LoadTestToolbox) is a set of lightweight tools for load testing web applications.
 
 ```powershell
-.\gocannon.exe http://localhost:<APP_PORT>/ --duration 30s --trust-all
+dotnet ltt drill --url http://localhost:<PORT>/ --rps 500 --duration 30 --filename .\artifacts\drill-chart.png
+
+dotnet ltt hammer --url http://localhost:<PORT>/ --min 1 --max 100 --filename .\artifacts\hammer-chart.png
+
+dotnet ltt nailgun --url http://localhost:<PORT>/ --requests 1000 --filename .\artifacts\nailgun-chart.png
 ```
 
 ## Visualization
