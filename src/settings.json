@@ -1,0 +1,72 @@
+{
+    "$schema": "https://raw.githubusercontent.com/dotnet/dotnet-monitor/main/documentation/schema.json",
+    "CollectionRules": {
+        "LargeGCHeapSize": {
+            "Trigger": {
+                "Type": "EventCounter",
+                "Settings": {
+                    "ProviderName": "System.Runtime",
+                    "CounterName": "gc-heap-size",
+                    "GreaterThan": 50,
+                    "SlidingWindowDuration": "00:00:30"
+                }
+            },
+            "Actions": [
+                {
+                    "Type": "CollectGCDump",
+                    "Settings": {
+                        "Egress": "monitorFile"
+                    }
+                }
+            ]
+        },
+        "AssemblyLoadTraceOnStartup": {
+            "Trigger": {
+              "Type": "Startup"
+            },
+            "Actions": [
+              {
+                "Type": "CollectTrace",
+                "Settings": {
+                  "Providers": [{
+                      "Name": "Microsoft-Windows-DotNETRuntime",
+                      "EventLevel": "Informational",
+                      "Keywords": "0xC"
+                  }],
+                  "Duration": "00:00:15",
+                  "Egress": "monitorFile"
+                }
+              }
+            ]
+          }
+    },
+    "DiagnosticPort": {
+        "ConnectionMode": "Listen",
+        "EndpointName": "/diag/dotnet-monitor.sock"
+    },
+    "Egress": {
+        "FileSystem": {
+            "monitorFile": {
+                "DirectoryPath": "/artifacts",
+                "IntermediateDirectoryPath": "/intermediateArtifacts"
+            }
+        }
+    },
+    "Logging": {
+        "Console": {
+            "FormatterName": "Simple"
+        }
+    },
+    "Metrics": {
+        "IncludeDefaultProviders": true,
+        "Providers": [
+            {
+                "ProviderName": "Microsoft-AspNetCore-Server-Kestrel"
+            }
+        ]
+    },
+    "Storage": {
+        "DefaultSharedPath": "/diag",
+        "DumpTempFolder": "/diag/dumps/"
+    }
+}

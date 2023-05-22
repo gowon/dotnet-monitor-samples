@@ -74,18 +74,14 @@ services:
       - "52325:52325"
     volumes:
       - diagnostics_data:/diag
+      - ./artifacts:/artifacts
 
   monitor7:
     image: mcr.microsoft.com/dotnet/monitor:7
     environment: 
-      - DOTNETMONITOR_DiagnosticPort__ConnectionMode=Listen
-      - DOTNETMONITOR_Logging__Console__FormatterName=simple
-      - DOTNETMONITOR_Storage__DefaultSharedPath=/diag
-      - DOTNETMONITOR_Storage__DumpTempFolder=/diag/dumps/
+
       - DOTNETMONITOR_Urls=http://+:52323
       - DOTNETMONITOR_Metrics__Endpoints=http://+:52325
-      - DOTNETMONITOR_Metrics__IncludeDefaultProviders=True
-      - DOTNETMONITOR_Metrics__Providers__0__ProviderName=Microsoft-AspNetCore-Server-Kestrel
       - CorsConfiguration__AllowedOrigins=https://dotnet-monitor-ui.dev
     hostname: monitor
     profiles:
@@ -98,6 +94,8 @@ services:
       - "52325:52325"
     volumes:
       - diagnostics_data:/diag
+      - ./artifacts:/artifacts
+      - ./settings.json:/root/.config/dotnet-monitor/settings.json:ro
 
 volumes:
   diagnostics_data:
